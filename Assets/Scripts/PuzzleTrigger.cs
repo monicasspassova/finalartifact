@@ -4,24 +4,36 @@ using UnityEngine.UIElements;
 public class PuzzleTrigger : MonoBehaviour
 {
     public UIDocument puzzleUI;
-    public GameManager gm;
     public int puzzleID;
-    private bool completed = false;
+    public bool completed = false;
+
     private VisualElement root;
 
     void Start()
     {
         root = puzzleUI.rootVisualElement;
-        root.style.display = DisplayStyle.None;
 
-        Button closeBtn = root.Q<Button>();
-        closeBtn.clicked += CloseUI;
+        //Button closeBtn = root.Q<Button>();
+        //closeBtn.clicked += () => CompletePuzzle();
+
+        Reset();
+
+    }
+
+    public void Reset()
+    {
+        root.style.display = DisplayStyle.None;
+        completed = false;
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player") && !completed)
         {
+            Button closeBtn = root.Q<Button>();
+            closeBtn.clicked -= CompletePuzzle; // clear others
+            closeBtn.clicked += CompletePuzzle; // add only this one
+
             root.style.display = DisplayStyle.Flex;
             UnityEngine.Cursor.lockState = CursorLockMode.None;
         }
@@ -36,7 +48,12 @@ public class PuzzleTrigger : MonoBehaviour
 
     public void CompletePuzzle()
     {
+        if (completed) return;
+
         completed = true;
+
         CloseUI();
+
+        GameManager.Instance.PuzzleCompleted(puzzleID);
     }
 }

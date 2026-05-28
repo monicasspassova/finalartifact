@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -11,9 +14,12 @@ public class GameManager : MonoBehaviour
     public FPSController player;
     public UIDocument winUI;
     public UIDocument loseUI;
+    public List<PuzzleTrigger> puzzles = new List<PuzzleTrigger>();
 
     private int puzzlesCompleted = 0;
     private const int totalPuzzles = 3;
+    private HashSet<int> completedPuzzles = new HashSet<int>();
+
 
     void Awake()
     {
@@ -24,7 +30,6 @@ public class GameManager : MonoBehaviour
     {
         winUI.rootVisualElement.style.display = DisplayStyle.None;
         loseUI.rootVisualElement.style.display = DisplayStyle.None;
-        player = GetComponent<FPSController>();
 
         Button loseCloseBtn = loseUI.rootVisualElement.Q<Button>();
         loseCloseBtn.clicked += () => CloseUI(loseUI);
@@ -34,22 +39,46 @@ public class GameManager : MonoBehaviour
 
     }
 
+    void Reset()
+    {
+        winUI.rootVisualElement.style.display = DisplayStyle.None;
+        loseUI.rootVisualElement.style.display = DisplayStyle.None;
+
+        puzzlesCompleted = 0;
+        completedPuzzles.Clear();
+
+        goose.Reset();
+        player.Reset();
+
+        foreach (PuzzleTrigger puzzle in puzzles)
+        {
+            puzzle.Reset();
+        }
+
+    }
+
     void Update()
     {
         if (goose.playerDead)
         {
             LoseGame();
-
         }
+        
 
     }
 
     public void PuzzleCompleted(int puzzleID)
     {
+        UnityEngine.Debug.Log($"PuzzleCompleted called with ID: {puzzleID}, already completed: {completedPuzzles.Contains(puzzleID)}");
+
+        if (completedPuzzles.Contains(puzzleID)) return;
+        completedPuzzles.Add(puzzleID);
+
         puzzlesCompleted++;
+        UnityEngine.Debug.Log($"puzzlesCompleted is now: {puzzlesCompleted}");
         goose.PuzzleSolved();
 
-        if (puzzlesCompleted >= totalPuzzles)
+        if (puzzlesCompleted == totalPuzzles)
         {
             WinGame();
         }
@@ -68,7 +97,6 @@ public class GameManager : MonoBehaviour
         UnityEngine.Cursor.lockState = CursorLockMode.None;
         Time.timeScale = 0f;
 
-
     }
 
     public void CloseUI(UIDocument ui)
@@ -77,9 +105,8 @@ public class GameManager : MonoBehaviour
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         Time.timeScale = 1f;
 
-        goose.Reset();
-
-        player.Reset();
+      
+        Reset();
 
     }
 }

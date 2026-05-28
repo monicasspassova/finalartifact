@@ -47,6 +47,7 @@ public class Goose : MonoBehaviour
     public void Reset()
     {
         // starting pos
+        isCalled = false;
         playerDead = false;
         isAttacking = false;
         transform.position = new Vector3(30, 1, -24);
@@ -86,7 +87,11 @@ public class Goose : MonoBehaviour
             }
             else if (distanceToPlayer <= detectionRadius)
             {
-                isCalled = false;
+                if (isCalled)
+                {
+                    isCalled = false;
+                }
+
                 currentState = State.Chase;
             }
             else if (isCalled)

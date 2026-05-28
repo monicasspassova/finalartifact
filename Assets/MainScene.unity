@@ -205,8 +205,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuzzleTrigger
   puzzleUI: {fileID: 619708586}
-  gm: {fileID: 0}
-  puzzleID: 3
+  puzzleID: 2
+  completed: 0
 --- !u!135 &229196244
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1091,6 +1091,10 @@ MonoBehaviour:
   player: {fileID: 753345844}
   winUI: {fileID: 103652513}
   loseUI: {fileID: 624662965}
+  puzzles:
+  - {fileID: 1759575006}
+  - {fileID: 1841112491}
+  - {fileID: 229196243}
 --- !u!1 &943353370
 GameObject:
   m_ObjectHideFlags: 0
@@ -1682,8 +1686,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuzzleTrigger
   puzzleUI: {fileID: 619708586}
-  gm: {fileID: 0}
-  puzzleID: 1
+  puzzleID: 0
+  completed: 0
 --- !u!1 &1780258619
 GameObject:
   m_ObjectHideFlags: 0
@@ -1951,8 +1955,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuzzleTrigger
   puzzleUI: {fileID: 619708586}
-  gm: {fileID: 0}
-  puzzleID: 2
+  puzzleID: 1
+  completed: 0
 --- !u!135 &1841112492
 SphereCollider:
   m_ObjectHideFlags: 0
