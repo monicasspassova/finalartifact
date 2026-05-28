@@ -17,7 +17,7 @@ public class Goose : MonoBehaviour
     public float attackCooldown = 2f;
     public float patrolIdleTime = 3f;
     public float rotationSpeed = 7f;
-    public float attackDuration = 1.0f; // Duration of attack animation 
+    public float attackDuration = 1.0f; 
 
     private NavMeshAgent agent;
     private float cooldownTimer;
@@ -28,6 +28,7 @@ public class Goose : MonoBehaviour
     private bool isPatrolling;
     private bool isIdle;
     private bool isAttacking;
+    private bool isCalled;
 
     private enum State { Patrol, Chase, Attack }
     private State currentState;
@@ -69,11 +70,23 @@ public class Goose : MonoBehaviour
         if (!isAttacking)
         {
             if (distanceToPlayer <= attackRange && cooldownTimer <= 0f)
+            {
                 currentState = State.Attack;
+            }
             else if (distanceToPlayer <= detectionRadius)
+            {
+                isCalled = false;
                 currentState = State.Chase;
+            }
+            else if (isCalled)
+            {
+                currentState = State.Chase;
+            }
             else
+            {
                 currentState = State.Patrol;
+            }
+
         }
 
         // Execute state
@@ -133,6 +146,13 @@ public class Goose : MonoBehaviour
             agent.SetDestination(player.position);
     }
 
+    public void PuzzleSolved()
+    {
+        isCalled = true;
+        ChasePlayer();
+        
+    }
+
     void Attack()
     {
         if (isAttacking) return;
@@ -145,6 +165,7 @@ public class Goose : MonoBehaviour
         }
 
         isAttacking = true;
+        DealDamage();
         cooldownTimer = attackCooldown;
         attackTimer = attackDuration;
         agent.ResetPath();
@@ -157,9 +178,18 @@ public class Goose : MonoBehaviour
         //animator.SetTrigger("Attack");
     }
 
+    public void DealDamage()
+    {
+        if (Vector3.Distance(transform.position, player.position) <= attackRange)
+        {
+
+        }
+    }
+
     public void EndAttack()
     {
         isAttacking = false;
+        isCalled = false;
         attackTimer = 0f;
     }
 
@@ -168,16 +198,10 @@ public class Goose : MonoBehaviour
         if (!isAttacking) return;
 
         isAttacking = false;
+        isCalled = false;
+
         attackTimer = 0f;
         cooldownTimer = attackCooldown;
-
-        //animator.ResetTrigger("Attack");
-
-        // Instantly cut the attack animation
-        //if (animator.HasState(0, Animator.StringToHash("Walk")))
-        //    animator.CrossFade("Walk", 0.1f);
-        //else if (animator.HasState(0, Animator.StringToHash("Walk")))
-        //    animator.CrossFade("Walk", 0.1f);
 
         if (agent.isOnNavMesh && player != null)
             agent.SetDestination(player.position);

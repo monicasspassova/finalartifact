@@ -4,6 +4,7 @@ using UnityEngine.UIElements;
 public class PuzzleTrigger : MonoBehaviour
 {
     public UIDocument puzzleUI;
+    public GameManager gm;
     public int puzzleID;
     private bool completed = false;
     private VisualElement root;
@@ -30,11 +31,13 @@ public class PuzzleTrigger : MonoBehaviour
     {
         root.style.display = DisplayStyle.None;
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+
     }
 
     public void CompletePuzzle()
     {
         completed = true;
+        gm.PuzzleCompleted(0);
         CloseUI();
     }
 }
