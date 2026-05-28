@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Specialized;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,7 +14,7 @@ public class Goose : MonoBehaviour
     [Header("Settings")]
     public float detectionRadius = 15f;
     public float attackRange = 2f;
-    public float patrolRadius = 20f;
+    public float patrolRadius = 50f;
     public float attackCooldown = 2f;
     public float patrolIdleTime = 3f;
     public float rotationSpeed = 7f;
@@ -23,6 +24,7 @@ public class Goose : MonoBehaviour
     private float cooldownTimer;
     private float idleTimer;
     private float attackTimer;
+    private float baseSpeed;
 
     private Vector3 patrolPoint;
     private bool isPatrolling;
@@ -41,6 +43,8 @@ public class Goose : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         if (animator == null) animator = GetComponent<Animator>();
 
+        baseSpeed = agent.speed;
+
         Reset();
     }
 
@@ -53,6 +57,7 @@ public class Goose : MonoBehaviour
         transform.position = new Vector3(30, 1, -24);
         SetNewPatrolPoint();
         currentState = State.Patrol;
+        agent.speed = baseSpeed;
     }
 
     void Update()
@@ -92,6 +97,7 @@ public class Goose : MonoBehaviour
                     isCalled = false;
                 }
 
+                agent.speed = baseSpeed;
                 currentState = State.Chase;
             }
             else if (isCalled)
@@ -100,7 +106,9 @@ public class Goose : MonoBehaviour
             }
             else
             {
+                agent.speed = baseSpeed;
                 currentState = State.Patrol;
+                
             }
 
         }
@@ -108,9 +116,12 @@ public class Goose : MonoBehaviour
         // Execute state
         switch (currentState)
         {
-            case State.Patrol: Patrol(); break;
-            case State.Chase: ChasePlayer(); break;
-            case State.Attack: Attack(); break;
+            case State.Patrol: Patrol(); 
+                break;
+            case State.Chase: ChasePlayer(); 
+                break;
+            case State.Attack: Attack(); 
+                break;
         }
 
         //animator.SetBool("isWalking", agent.velocity.magnitude > 0.1f && !isAttacking);
@@ -165,6 +176,8 @@ public class Goose : MonoBehaviour
     public void PuzzleSolved()
     {
         isCalled = true;
+        agent.speed = baseSpeed * 3f;
+
         ChasePlayer();
         
     }
@@ -206,6 +219,7 @@ public class Goose : MonoBehaviour
         isAttacking = false;
         isCalled = false;
         attackTimer = 0f;
+        agent.speed = baseSpeed;
     }
 
     public void CancelAttack()
@@ -218,7 +232,9 @@ public class Goose : MonoBehaviour
         attackTimer = 0f;
         cooldownTimer = attackCooldown;
 
+
         if (agent.isOnNavMesh && player != null)
+            agent.speed = baseSpeed;
             agent.SetDestination(player.position);
     }
 

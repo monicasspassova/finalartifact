@@ -13,9 +13,6 @@ public class PuzzleTrigger : MonoBehaviour
     {
         root = puzzleUI.rootVisualElement;
 
-        //Button closeBtn = root.Q<Button>();
-        //closeBtn.clicked += () => CompletePuzzle();
-
         Reset();
 
     }

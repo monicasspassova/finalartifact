@@ -69,13 +69,11 @@ public class GameManager : MonoBehaviour
 
     public void PuzzleCompleted(int puzzleID)
     {
-        UnityEngine.Debug.Log($"PuzzleCompleted called with ID: {puzzleID}, already completed: {completedPuzzles.Contains(puzzleID)}");
 
         if (completedPuzzles.Contains(puzzleID)) return;
         completedPuzzles.Add(puzzleID);
 
         puzzlesCompleted++;
-        UnityEngine.Debug.Log($"puzzlesCompleted is now: {puzzlesCompleted}");
         goose.PuzzleSolved();
 
         if (puzzlesCompleted == totalPuzzles)
