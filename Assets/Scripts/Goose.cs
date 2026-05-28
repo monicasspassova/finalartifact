@@ -14,7 +14,7 @@ public class Goose : MonoBehaviour
     [Header("Settings")]
     public float detectionRadius = 15f;
     public float attackRange = 2f;
-    public float patrolRadius = 50f;
+    public float patrolRadius = 30f;
     public float attackCooldown = 2f;
     public float patrolIdleTime = 3f;
     public float rotationSpeed = 7f;
