@@ -6,7 +6,7 @@ public class GooseController : MonoBehaviour
     public Transform player;
     public float wanderRadius = 20f;
     public float wanderInterval = 3f;
-    public float chaseSpeed = 8f;
+    public float chaseSpeed = 5f;
     public float wanderSpeed = 3f;
     public float chaseRange = 15f;
     public float chaseDuration = 5f;
