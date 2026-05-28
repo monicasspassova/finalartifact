@@ -4,7 +4,7 @@ using UnityEngine;
 public class FPSController : MonoBehaviour
 {
     public float moveSpeed = 5f;
-    public float mouseSensitivity = 2f;
+    public float mouseSensitivity = 3f;
     public float jumpHeight = 1.5f;
     public float gravity = -9.81f;
 
@@ -12,12 +12,21 @@ public class FPSController : MonoBehaviour
     private Transform cameraTransform;
     private float xRotation = 0f;
     private Vector3 velocity;
+    private Vector3 startPos;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
         cameraTransform = Camera.main.transform;
         Cursor.lockState = CursorLockMode.Locked;
+        startPos = controller.transform.position;
+    }
+
+    public void Reset()
+    {
+        controller.enabled = false;
+        controller.transform.position = startPos;
+        controller.enabled = true;
     }
 
     void Update()

@@ -30,15 +30,26 @@ public class Goose : MonoBehaviour
     private bool isAttacking;
     private bool isCalled;
 
+    public bool playerDead;
+
     private enum State { Patrol, Chase, Attack }
     private State currentState;
 
     void Start()
     {
-
+        playerDead = false;
         agent = GetComponent<NavMeshAgent>();
         if (animator == null) animator = GetComponent<Animator>();
 
+        Reset();
+    }
+
+    public void Reset()
+    {
+        // starting pos
+        playerDead = false;
+        isAttacking = false;
+        transform.position = new Vector3(30, 1, -24);
         SetNewPatrolPoint();
         currentState = State.Patrol;
     }
@@ -170,7 +181,6 @@ public class Goose : MonoBehaviour
         attackTimer = attackDuration;
         agent.ResetPath();
 
-        // Rotate to face player instantly
         Vector3 lookPos = new Vector3(player.position.x, transform.position.y, player.position.z);
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookPos - transform.position), Time.deltaTime * rotationSpeed);
 
@@ -182,7 +192,7 @@ public class Goose : MonoBehaviour
     {
         if (Vector3.Distance(transform.position, player.position) <= attackRange)
         {
-
+            playerDead = true;
         }
     }
 

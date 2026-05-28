@@ -37,7 +37,6 @@ public class PuzzleTrigger : MonoBehaviour
     public void CompletePuzzle()
     {
         completed = true;
-        gm.PuzzleCompleted(0);
         CloseUI();
     }
 }
