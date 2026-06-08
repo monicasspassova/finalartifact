@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Image style="height: 73px;"/>
+    <ui:Label text="You lost..." style="-unity-text-align: upper-center;"/>
+    <ui:Button text="Play Again" name="PlayAgainButton" style="bottom: auto; right: auto; top: auto; left: auto; height: 31px; width: 394px;"/>
+</ui:UXML>
