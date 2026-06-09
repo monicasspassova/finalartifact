@@ -55,6 +55,16 @@ public class PuzzleZoneController : MonoBehaviour
             options = new[] { "Shih Tzu", "Husky", "Golden Retriever", "Alaskan Malamute", "Corgi"},
             correctIndex = 3
         }
+        new TriviaQ {
+            question = "What year was UW founded?",
+            options = new[] { "1851", "1861", "1871", "1881" },
+            correctIndex = 0
+        },
+        new TriviaQ {
+            question = "What are UW's official colors?",
+            options = new[] { "Purple and Gold", "Blue and Gold", "Purple and White", "Purple and Silver" },
+            correctIndex = 0
+        }
     };
 
     // ---- Style helpers ----
@@ -315,7 +325,7 @@ private string scrambleAnswer = "";
 
 void BuildScrambleUI()
 {
-    string[] words = { "SUZZALLO", "HUSKY", "DAWGS", "QUAD", "KANE" };
+    string[] words = { "SUZZALLO", "HUSKY", "DAWGS", "QUAD", "KANE", "ODEGAARD", "PACCAR", "GATES", "ALLEN" };
     string correct = words[Random.Range(0, words.Length)];
     scrambleAnswer = correct;
     string scrambled = ScrambleWord(correct);
