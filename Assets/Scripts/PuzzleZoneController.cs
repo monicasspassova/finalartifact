@@ -54,7 +54,7 @@ public class PuzzleZoneController : MonoBehaviour
             question = "What kind of dog is Dubs II, the current live mascot of UW?",
             options = new[] { "Shih Tzu", "Husky", "Golden Retriever", "Alaskan Malamute", "Corgi"},
             correctIndex = 3
-        }
+        },
         new TriviaQ {
             question = "What year was UW founded?",
             options = new[] { "1851", "1861", "1871", "1881" },
