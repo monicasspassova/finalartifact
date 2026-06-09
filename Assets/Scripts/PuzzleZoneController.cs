@@ -13,10 +13,13 @@ public class PuzzleZoneController : MonoBehaviour
 {
     public UIDocument puzzleUI;
     public int puzzleID = 1;
+    public enum PuzzleType { Random, Matching, Trivia, Scramble }
+    public PuzzleType puzzleType = PuzzleType.Random;
+
     public bool completed = false;
 
     private VisualElement root;
-    private VisualElement panel;
+    private ScrollView panel;
     private int lastPuzzleShown = -1;
 
     // ---- Matching puzzle data ----
@@ -49,8 +52,18 @@ public class PuzzleZoneController : MonoBehaviour
         },
         new TriviaQ {
             question = "What kind of dog is Dubs II, the current live mascot of UW?",
-            options = new[] { "Shih Tzu", "Husky", "Golden Retriever", "Alaskan Malamute", "Corgi" },
+            options = new[] { "Shih Tzu", "Husky", "Golden Retriever", "Alaskan Malamute", "Corgi"},
             correctIndex = 3
+        },
+        new TriviaQ {
+            question = "What year was UW founded?",
+            options = new[] { "1851", "1861", "1871", "1881" },
+            correctIndex = 0
+        },
+        new TriviaQ {
+            question = "What are UW's official colors?",
+            options = new[] { "Purple and Gold", "Blue and Gold", "Purple and White", "Purple and Silver" },
+            correctIndex = 0
         }
     };
 
@@ -75,18 +88,20 @@ public class PuzzleZoneController : MonoBehaviour
 
     void ShowRandomPuzzle()
     {
-        // Re-fetch root each time to avoid stale references
         root = puzzleUI.rootVisualElement;
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
 
-        // Pick a type (0=matching, 1=trivia0, 2=trivia1) different from last
+        if (puzzleType == PuzzleType.Matching) { BuildMatchingUI(); return; }
+        if (puzzleType == PuzzleType.Trivia)   { BuildTriviaUI(Random.Range(0, TriviaPool.Length)); return; }
+        if (puzzleType == PuzzleType.Scramble) { BuildScrambleUI(); return; }
+
+        // random fallback
         int pick;
         do { pick = Random.Range(0, 3); } while (pick == lastPuzzleShown);
         lastPuzzleShown = pick;
-
-        UnityEngine.Cursor.lockState = CursorLockMode.None;
-
-        if (pick == 0) BuildMatchingUI();
-        else           BuildTriviaUI(pick - 1);
+        if (pick == 0)      BuildMatchingUI();
+        else if (pick == 1) BuildTriviaUI(0);
+        else                BuildTriviaUI(1);
     }
 
     // ================================================================
@@ -303,6 +318,82 @@ public class PuzzleZoneController : MonoBehaviour
     }
 
     // ================================================================
+//  SCRAMBLE PUZZLE
+// ================================================================
+
+private string scrambleAnswer = "";
+
+void BuildScrambleUI()
+{
+    string[] words = { "SUZZALLO", "HUSKY", "DAWGS", "QUAD", "KANE", "ODEGAARD", "PACCAR", "GATES", "ALLEN" };
+    string correct = words[Random.Range(0, words.Length)];
+    scrambleAnswer = correct;
+    string scrambled = ScrambleWord(correct);
+
+    root.Clear();
+    root.style.display = DisplayStyle.Flex;
+    root.style.alignItems = Align.Center;
+    root.style.justifyContent = Justify.Center;
+
+    panel = MakePanel();
+    root.Add(panel);
+
+    AddLabel(panel, "Unscramble the UW word!", 17, FontStyle.Bold, Color.white, 0, 8);
+    AddLabel(panel, scrambled, 28, FontStyle.Bold, new Color(0.9f, 0.85f, 0.3f), 0, 16);
+
+    var feedback = new Label("");
+    feedback.name = "feedback";
+    feedback.style.fontSize = 13;
+    feedback.style.color = Color.yellow;
+    feedback.style.marginBottom = 8;
+    feedback.style.whiteSpace = WhiteSpace.Normal;
+    panel.Add(feedback);
+
+    var inputField = new TextField();
+    inputField.name = "scramble-input";
+    inputField.style.marginBottom = 10;
+    inputField.style.color = Color.black;
+    inputField.style.backgroundColor = Color.white;
+    inputField.style.fontSize = 14;
+    panel.Add(inputField);
+
+    var submitBtn = MakeBtn("Submit", () =>
+    {
+        string answer = inputField.value.Trim().ToUpper();
+        var fb = panel.Q<Label>("feedback");
+        if (answer == scrambleAnswer)
+        {
+            if (fb != null) fb.text = "Correct! 🎉";
+            StartCoroutine(ShowPuzzlePieceAfterDelay(1.0f));
+        }
+        else
+        {
+            GameManager.Instance.TriggerGooseAggro(15f);
+            if (fb != null) fb.text = "Wrong! The goose is coming!";
+            StartCoroutine(CloseAfterDelay(2.5f));
+        }
+    });
+    panel.Add(submitBtn);
+
+    var giveUpBtn = MakeBtn("Give Up  (Goose incoming!)", OnGiveUp);
+    StyleAsSecondary(giveUpBtn);
+    panel.Add(giveUpBtn);
+}
+
+string ScrambleWord(string word)
+{
+    char[] chars = word.ToCharArray();
+    for (int i = chars.Length - 1; i > 0; i--)
+    {
+        int j = Random.Range(0, i + 1);
+        (chars[i], chars[j]) = (chars[j], chars[i]);
+    }
+    // Make sure it's not the same as the original
+    if (new string(chars) == word) return ScrambleWord(word);
+    return new string(chars);
+}
+
+    // ================================================================
     //  SHARED
     // ================================================================
 
@@ -329,29 +420,33 @@ public class PuzzleZoneController : MonoBehaviour
         root.style.position = Position.Absolute;
         root.style.left   = 0; root.style.right  = 0;
         root.style.top    = 0; root.style.bottom = 0;
-        root.style.backgroundColor = new Color(0f, 0f, 0f, 0.6f); // dim overlay
+        root.style.backgroundColor = new Color(0f, 0f, 0f, 0.6f);
         UnityEngine.Cursor.lockState = CursorLockMode.None;
 
+        var scroll = new ScrollView();
+        scroll.style.width = 320;
+        scroll.style.maxHeight = Length.Percent(70);
+        scroll.style.backgroundColor = new Color(0.08f, 0.12f, 0.22f, 0.97f);
+        scroll.style.borderTopLeftRadius     = 12;
+        scroll.style.borderTopRightRadius    = 12;
+        scroll.style.borderBottomLeftRadius  = 12;
+        scroll.style.borderBottomRightRadius = 12;
+        scroll.style.borderTopWidth    = 2;
+        scroll.style.borderBottomWidth = 2;
+        scroll.style.borderLeftWidth   = 2;
+        scroll.style.borderRightWidth  = 2;
+        scroll.style.borderTopColor    = new Color(0.3f, 0.7f, 1f);
+        scroll.style.borderBottomColor = new Color(0.3f, 0.7f, 1f);
+        scroll.style.borderLeftColor   = new Color(0.3f, 0.7f, 1f);
+        scroll.style.borderRightColor  = new Color(0.3f, 0.7f, 1f);
+        root.Add(scroll);
+
         var p = new VisualElement();
-        p.style.backgroundColor = new Color(0.08f, 0.12f, 0.22f, 0.97f);
         p.style.paddingTop    = 24;
         p.style.paddingBottom = 24;
         p.style.paddingLeft   = 28;
         p.style.paddingRight  = 28;
-        p.style.borderTopLeftRadius     = 12;
-        p.style.borderTopRightRadius    = 12;
-        p.style.borderBottomLeftRadius  = 12;
-        p.style.borderBottomRightRadius = 12;
-        p.style.width = 320;
-        p.style.borderTopWidth    = 2;
-        p.style.borderBottomWidth = 2;
-        p.style.borderLeftWidth   = 2;
-        p.style.borderRightWidth  = 2;
-        p.style.borderTopColor    = new Color(0.3f, 0.7f, 1f);
-        p.style.borderBottomColor = new Color(0.3f, 0.7f, 1f);
-        p.style.borderLeftColor   = new Color(0.3f, 0.7f, 1f);
-        p.style.borderRightColor  = new Color(0.3f, 0.7f, 1f);
-        root.Add(p);
+        scroll.Add(p);
 
         var icon = new Label("🧩  PUZZLE PIECE");
         icon.style.fontSize = 20;
@@ -427,23 +522,22 @@ public class PuzzleZoneController : MonoBehaviour
     //  UI HELPERS
     // ================================================================
 
-    VisualElement MakePanel()
+    ScrollView MakePanel()
     {
-        var p = new VisualElement();
-        p.style.backgroundColor = new Color(0.10f, 0.10f, 0.18f, 0.95f);
-        p.style.paddingTop    = 18;
-        p.style.paddingBottom = 18;
-        p.style.paddingLeft   = 22;
-        p.style.paddingRight  = 22;
-        p.style.borderTopLeftRadius     = 10;
-        p.style.borderTopRightRadius    = 10;
-        p.style.borderBottomLeftRadius  = 10;
-        p.style.borderBottomRightRadius = 10;
-        p.style.width = 360;
-        p.style.maxWidth = Length.Percent(85);
-        p.style.maxHeight = Length.Percent(80);
-        p.style.overflow = Overflow.Hidden;
-        return p;
+        var scroll = new ScrollView();
+        scroll.style.backgroundColor = new Color(0.10f, 0.10f, 0.18f, 0.95f);
+        scroll.style.paddingTop    = 14;
+        scroll.style.paddingBottom = 14;
+        scroll.style.paddingLeft   = 18;
+        scroll.style.paddingRight  = 18;
+        scroll.style.borderTopLeftRadius     = 10;
+        scroll.style.borderTopRightRadius    = 10;
+        scroll.style.borderBottomLeftRadius  = 10;
+        scroll.style.borderBottomRightRadius = 10;
+        scroll.style.width = 340;
+        scroll.style.maxWidth = Length.Percent(80);
+        scroll.style.maxHeight = Length.Percent(75);
+        return scroll;
     }
 
     VisualElement MakeColumn()
