@@ -441,6 +441,8 @@ public class PuzzleZoneController : MonoBehaviour
         p.style.borderBottomRightRadius = 10;
         p.style.width = 360;
         p.style.maxWidth = Length.Percent(85);
+        p.style.maxHeight = Length.Percent(80);
+        p.style.overflow = Overflow.Hidden;
         return p;
     }
 
