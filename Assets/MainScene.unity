@@ -331,7 +331,7 @@ GameObject:
   m_Component:
   - component: {fileID: 229196245}
   - component: {fileID: 229196244}
-  - component: {fileID: 229196243}
+  - component: {fileID: 229196246}
   m_Layer: 0
   m_Name: PuzzleZone3
   m_TagString: Untagged
@@ -339,21 +339,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &229196243
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 229196242}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bce8ada7126724242b7d962e44aa2311, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PuzzleTrigger
-  puzzleUI: {fileID: 619708586}
-  puzzleID: 2
-  completed: 0
 --- !u!135 &229196244
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -391,6 +376,22 @@ Transform:
   - {fileID: 1974308437}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &229196246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 229196242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4345ba32be95b6541a0f0add8a97203c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PuzzleZoneController
+  puzzleUI: {fileID: 934127139}
+  puzzleID: 3
+  puzzleType: 3
+  completed: 0
 --- !u!1 &236500909
 GameObject:
   m_ObjectHideFlags: 0
@@ -3023,6 +3024,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PuzzleZoneController
   puzzleUI: {fileID: 619708586}
   puzzleID: 1
+  puzzleType: 2
   completed: 0
 --- !u!1 &1780258619
 GameObject:
@@ -3362,6 +3364,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PuzzleZoneController
   puzzleUI: {fileID: 536168240}
   puzzleID: 2
+  puzzleType: 2
   completed: 0
 --- !u!1001 &1915043468
 PrefabInstance:

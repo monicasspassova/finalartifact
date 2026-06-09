@@ -308,6 +308,81 @@ public class PuzzleZoneController : MonoBehaviour
     }
 
     // ================================================================
+//  SCRAMBLE PUZZLE
+// ================================================================
+
+private string scrambleAnswer = "";
+
+void BuildScrambleUI()
+{
+    string[] words = { "SUZZALLO", "HUSKY", "DAWGS", "QUAD", "KANE" };
+    string correct = words[Random.Range(0, words.Length)];
+    scrambleAnswer = correct;
+    string scrambled = ScrambleWord(correct);
+
+    root.Clear();
+    root.style.display = DisplayStyle.Flex;
+    root.style.alignItems = Align.Center;
+    root.style.justifyContent = Justify.Center;
+
+    panel = MakePanel();
+    root.Add(panel);
+
+    AddLabel(panel, "Unscramble the UW word!", 17, FontStyle.Bold, Color.white, 0, 8);
+    AddLabel(panel, scrambled, 28, FontStyle.Bold, new Color(0.9f, 0.85f, 0.3f), 0, 16);
+
+    var feedback = new Label("");
+    feedback.name = "feedback";
+    feedback.style.fontSize = 13;
+    feedback.style.color = Color.yellow;
+    feedback.style.marginBottom = 8;
+    feedback.style.whiteSpace = WhiteSpace.Normal;
+    panel.Add(feedback);
+
+    var inputField = new TextField();
+    inputField.name = "scramble-input";
+    inputField.style.marginBottom = 10;
+    inputField.style.color = Color.white;
+    inputField.style.fontSize = 14;
+    panel.Add(inputField);
+
+    var submitBtn = MakeBtn("Submit", () =>
+    {
+        string answer = inputField.value.Trim().ToUpper();
+        var fb = panel.Q<Label>("feedback");
+        if (answer == scrambleAnswer)
+        {
+            if (fb != null) fb.text = "Correct! 🎉";
+            StartCoroutine(ShowPuzzlePieceAfterDelay(1.0f));
+        }
+        else
+        {
+            GameManager.Instance.TriggerGooseAggro(15f);
+            if (fb != null) fb.text = "Wrong! The goose is coming!";
+            StartCoroutine(CloseAfterDelay(2.5f));
+        }
+    });
+    panel.Add(submitBtn);
+
+    var giveUpBtn = MakeBtn("Give Up  (Goose incoming!)", OnGiveUp);
+    StyleAsSecondary(giveUpBtn);
+    panel.Add(giveUpBtn);
+}
+
+string ScrambleWord(string word)
+{
+    char[] chars = word.ToCharArray();
+    for (int i = chars.Length - 1; i > 0; i--)
+    {
+        int j = Random.Range(0, i + 1);
+        (chars[i], chars[j]) = (chars[j], chars[i]);
+    }
+    // Make sure it's not the same as the original
+    if (new string(chars) == word) return ScrambleWord(word);
+    return new string(chars);
+}
+
+    // ================================================================
     //  SHARED
     // ================================================================
 
