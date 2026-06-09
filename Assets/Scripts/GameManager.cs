@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
 
     void BuildAggroBar()
     {
+        UnityEngine.Debug.Log("[GameManager] BuildAggroBar called. aggroTimerUI=" + aggroTimerUI);
         if (aggroTimerUI == null) return;
         var root = aggroTimerUI.rootVisualElement;
         root.Clear();

@@ -717,7 +717,7 @@ MonoBehaviour:
   player: {fileID: 753345844}
   winUI: {fileID: 103652513}
   loseUI: {fileID: 624662965}
-  aggroTimerUI: {fileID: 0}
+  aggroTimerUI: {fileID: 1221963410}
   puzzles:
   - {fileID: 1759575006}
   - {fileID: 1841112494}
@@ -2371,6 +2371,61 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7998463412835849450, guid: 32b3a39cf7df4bb479ce54be8fbbdf60, type: 3}
   m_PrefabInstance: {fileID: 1203349142}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1221963409
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1221963411}
+  - component: {fileID: 1221963410}
+  m_Layer: 5
+  m_Name: Aggro
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1221963410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1221963409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: c05043e5e48ad2647b49ad45cbe8ed0a, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 18fbe6f23bed81240a99ff040708a563, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &1221963411
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1221963409}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1269550712
 GameObject:
   m_ObjectHideFlags: 0
@@ -3036,7 +3091,7 @@ GameObject:
   - component: {fileID: 1565874553}
   - component: {fileID: 1565874552}
   m_Layer: 5
-  m_Name: UIDocument (1)
+  m_Name: EndZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4113,3 +4168,4 @@ SceneRoots:
   - {fileID: 324837600}
   - {fileID: 1514780014}
   - {fileID: 1565874553}
+  - {fileID: 1221963411}
