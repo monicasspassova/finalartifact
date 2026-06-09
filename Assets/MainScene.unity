@@ -1074,6 +1074,7 @@ MonoBehaviour:
   patrolIdleTime: 1
   rotationSpeed: 7
   attackDuration: 1
+  isAggro: 0
   playerDead: 0
 --- !u!1 &490669000
 GameObject:
@@ -1613,8 +1614,9 @@ MonoBehaviour:
   player: {fileID: 753345844}
   winUI: {fileID: 103652513}
   loseUI: {fileID: 624662965}
+  aggroTimerUI: {fileID: 0}
   puzzles:
-  - {fileID: 1759575006}
+  - {fileID: 0}
   - {fileID: 1841112491}
   - {fileID: 229196243}
 --- !u!1 &943353370
@@ -2855,11 +2857,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1759575003}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bce8ada7126724242b7d962e44aa2311, type: 3}
+  m_Script: {fileID: 11500000, guid: 4345ba32be95b6541a0f0add8a97203c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PuzzleTrigger
+  m_EditorClassIdentifier: Assembly-CSharp::PuzzleZoneController
   puzzleUI: {fileID: 619708586}
-  puzzleID: 0
+  puzzleID: 1
   completed: 0
 --- !u!1 &1780258619
 GameObject:
