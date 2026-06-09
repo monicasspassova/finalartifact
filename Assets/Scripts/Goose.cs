@@ -25,6 +25,8 @@ public class Goose : MonoBehaviour
     private float idleTimer;
     private float attackTimer;
     private float baseSpeed;
+    private float aggroTimer;
+    public bool isAggro;  // public so GameManager can read for the timer bar
 
     private Vector3 patrolPoint;
     private bool isPatrolling;
@@ -32,6 +34,7 @@ public class Goose : MonoBehaviour
     private bool isAttacking;
     private bool isCalled;
 
+    public float AggroTimeRemaining => aggroTimer;
     public bool playerDead;
 
     private enum State { Patrol, Chase, Attack }
@@ -48,10 +51,27 @@ public class Goose : MonoBehaviour
         Reset();
     }
 
+    public void AggroForDuration(float seconds)
+    {
+        // Force out of any attack state so the agent isn't stopped
+        isAttacking = false;
+        attackTimer = 0f;
+        agent.isStopped = false;
+
+        isCalled = true;
+        isAggro = true;
+        aggroTimer = seconds;
+        agent.speed = baseSpeed * 3f;
+        currentState = State.Chase;
+        ChasePlayer();
+    }
+
     public void Reset()
     {
         // starting pos
         isCalled = false;
+        isAggro = false;
+        aggroTimer = 0f;
         playerDead = false;
         isAttacking = false;
         transform.position = new Vector3(30, 1, -24);
@@ -63,6 +83,17 @@ public class Goose : MonoBehaviour
     void Update()
     {
         cooldownTimer -= Time.deltaTime;
+
+        if (isAggro)
+        {
+            aggroTimer -= Time.deltaTime;
+            if (aggroTimer <= 0f)
+            {
+                isAggro = false;
+                isCalled = false;
+                agent.speed = baseSpeed;
+            }
+        }
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
@@ -90,6 +121,12 @@ public class Goose : MonoBehaviour
             {
                 currentState = State.Attack;
             }
+            else if (isAggro)
+            {
+                // During timed aggro: always chase at 3x speed, ignore detection radius logic
+                agent.speed = baseSpeed * 3f;
+                currentState = State.Chase;
+            }
             else if (distanceToPlayer <= detectionRadius)
             {
                 if (isCalled)
@@ -108,9 +145,7 @@ public class Goose : MonoBehaviour
             {
                 agent.speed = baseSpeed;
                 currentState = State.Patrol;
-                
             }
-
         }
 
         // Execute state
@@ -217,9 +252,9 @@ public class Goose : MonoBehaviour
     public void EndAttack()
     {
         isAttacking = false;
-        isCalled = false;
+        if (!isAggro) isCalled = false;
         attackTimer = 0f;
-        agent.speed = baseSpeed;
+        if (!isAggro) agent.speed = baseSpeed;
     }
 
     public void CancelAttack()
@@ -227,15 +262,16 @@ public class Goose : MonoBehaviour
         if (!isAttacking) return;
 
         isAttacking = false;
-        isCalled = false;
+        if (!isAggro) isCalled = false;
 
         attackTimer = 0f;
         cooldownTimer = attackCooldown;
 
-
         if (agent.isOnNavMesh && player != null)
-            agent.speed = baseSpeed;
+        {
+            agent.speed = isAggro ? baseSpeed * 3f : baseSpeed;
             agent.SetDestination(player.position);
+        }
     }
 
     void RotateTowardsMovementDirection()

@@ -51,6 +51,7 @@ public class PuzzleTrigger : MonoBehaviour
 
         CloseUI();
 
+        GameManager.Instance.TriggerGooseAggro(15f);
         GameManager.Instance.PuzzleCompleted(puzzleID);
     }
 }
