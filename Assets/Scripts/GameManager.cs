@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     public UIDocument winUI;
     public UIDocument loseUI;
     public UIDocument aggroTimerUI;
-    public List<PuzzleTrigger> puzzles = new List<PuzzleTrigger>();
+    public List<PuzzleZoneController> puzzles = new List<PuzzleZoneController>();
 
     private int puzzlesCompleted = 0;
     private const int totalPuzzles = 3;
@@ -101,7 +101,7 @@ public class GameManager : MonoBehaviour
         goose.Reset();
         player.Reset();
 
-        foreach (PuzzleTrigger puzzle in puzzles)
+        foreach (PuzzleZoneController puzzle in puzzles)
         {
             puzzle.Reset();
         }
@@ -183,7 +183,7 @@ public class GameManager : MonoBehaviour
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         Time.timeScale = 1f;
 
-      
+
         Reset();
 
     }
