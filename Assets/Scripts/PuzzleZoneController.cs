@@ -19,7 +19,7 @@ public class PuzzleZoneController : MonoBehaviour
     public bool completed = false;
 
     private VisualElement root;
-    private VisualElement panel;
+    private ScrollView panel;
     private int lastPuzzleShown = -1;
 
     // ---- Matching puzzle data ----
@@ -52,7 +52,7 @@ public class PuzzleZoneController : MonoBehaviour
         },
         new TriviaQ {
             question = "What kind of dog is Dubs II, the current live mascot of UW?",
-            options = new[] { "Shih Tzu", "Husky", "Golden Retriever", "Alaskan Malamute", "Corgi" },
+            options = new[] { "Shih Tzu", "Husky", "Golden Retriever", "Alaskan Malamute", "Corgi"},
             correctIndex = 3
         }
     };
@@ -342,7 +342,8 @@ void BuildScrambleUI()
     var inputField = new TextField();
     inputField.name = "scramble-input";
     inputField.style.marginBottom = 10;
-    inputField.style.color = Color.white;
+    inputField.style.color = Color.black;
+    inputField.style.backgroundColor = Color.white;
     inputField.style.fontSize = 14;
     panel.Add(inputField);
 
@@ -409,29 +410,33 @@ string ScrambleWord(string word)
         root.style.position = Position.Absolute;
         root.style.left   = 0; root.style.right  = 0;
         root.style.top    = 0; root.style.bottom = 0;
-        root.style.backgroundColor = new Color(0f, 0f, 0f, 0.6f); // dim overlay
+        root.style.backgroundColor = new Color(0f, 0f, 0f, 0.6f);
         UnityEngine.Cursor.lockState = CursorLockMode.None;
 
+        var scroll = new ScrollView();
+        scroll.style.width = 320;
+        scroll.style.maxHeight = Length.Percent(70);
+        scroll.style.backgroundColor = new Color(0.08f, 0.12f, 0.22f, 0.97f);
+        scroll.style.borderTopLeftRadius     = 12;
+        scroll.style.borderTopRightRadius    = 12;
+        scroll.style.borderBottomLeftRadius  = 12;
+        scroll.style.borderBottomRightRadius = 12;
+        scroll.style.borderTopWidth    = 2;
+        scroll.style.borderBottomWidth = 2;
+        scroll.style.borderLeftWidth   = 2;
+        scroll.style.borderRightWidth  = 2;
+        scroll.style.borderTopColor    = new Color(0.3f, 0.7f, 1f);
+        scroll.style.borderBottomColor = new Color(0.3f, 0.7f, 1f);
+        scroll.style.borderLeftColor   = new Color(0.3f, 0.7f, 1f);
+        scroll.style.borderRightColor  = new Color(0.3f, 0.7f, 1f);
+        root.Add(scroll);
+
         var p = new VisualElement();
-        p.style.backgroundColor = new Color(0.08f, 0.12f, 0.22f, 0.97f);
         p.style.paddingTop    = 24;
         p.style.paddingBottom = 24;
         p.style.paddingLeft   = 28;
         p.style.paddingRight  = 28;
-        p.style.borderTopLeftRadius     = 12;
-        p.style.borderTopRightRadius    = 12;
-        p.style.borderBottomLeftRadius  = 12;
-        p.style.borderBottomRightRadius = 12;
-        p.style.width = 320;
-        p.style.borderTopWidth    = 2;
-        p.style.borderBottomWidth = 2;
-        p.style.borderLeftWidth   = 2;
-        p.style.borderRightWidth  = 2;
-        p.style.borderTopColor    = new Color(0.3f, 0.7f, 1f);
-        p.style.borderBottomColor = new Color(0.3f, 0.7f, 1f);
-        p.style.borderLeftColor   = new Color(0.3f, 0.7f, 1f);
-        p.style.borderRightColor  = new Color(0.3f, 0.7f, 1f);
-        root.Add(p);
+        scroll.Add(p);
 
         var icon = new Label("🧩  PUZZLE PIECE");
         icon.style.fontSize = 20;
@@ -507,23 +512,22 @@ string ScrambleWord(string word)
     //  UI HELPERS
     // ================================================================
 
-    VisualElement MakePanel()
+    ScrollView MakePanel()
     {
-        var p = new VisualElement();
-        p.style.backgroundColor = new Color(0.10f, 0.10f, 0.18f, 0.95f);
-        p.style.paddingTop    = 18;
-        p.style.paddingBottom = 18;
-        p.style.paddingLeft   = 22;
-        p.style.paddingRight  = 22;
-        p.style.borderTopLeftRadius     = 10;
-        p.style.borderTopRightRadius    = 10;
-        p.style.borderBottomLeftRadius  = 10;
-        p.style.borderBottomRightRadius = 10;
-        p.style.width = 360;
-        p.style.maxWidth = Length.Percent(85);
-        p.style.maxHeight = Length.Percent(80);
-        p.style.overflow = Overflow.Hidden;
-        return p;
+        var scroll = new ScrollView();
+        scroll.style.backgroundColor = new Color(0.10f, 0.10f, 0.18f, 0.95f);
+        scroll.style.paddingTop    = 14;
+        scroll.style.paddingBottom = 14;
+        scroll.style.paddingLeft   = 18;
+        scroll.style.paddingRight  = 18;
+        scroll.style.borderTopLeftRadius     = 10;
+        scroll.style.borderTopRightRadius    = 10;
+        scroll.style.borderBottomLeftRadius  = 10;
+        scroll.style.borderBottomRightRadius = 10;
+        scroll.style.width = 340;
+        scroll.style.maxWidth = Length.Percent(80);
+        scroll.style.maxHeight = Length.Percent(75);
+        return scroll;
     }
 
     VisualElement MakeColumn()
