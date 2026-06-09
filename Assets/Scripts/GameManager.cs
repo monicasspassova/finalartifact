@@ -139,10 +139,10 @@ public class GameManager : MonoBehaviour
 
         puzzlesCompleted++;
 
-        if (puzzlesCompleted == totalPuzzles)
-        {
-            WinGame();
-        }
+        // if (puzzlesCompleted == totalPuzzles)
+        // {
+        //     WinGame();
+        // }
     }
 
     public void TriggerGooseAggro(float duration = 30f)
@@ -186,6 +186,16 @@ public class GameManager : MonoBehaviour
 
         Reset();
 
+    }
+
+    public bool AllPuzzlesComplete()
+    {
+        return puzzlesCompleted >= totalPuzzles;
+    }
+
+    public int PuzzlesCompleted()
+    {
+        return puzzlesCompleted;
     }
 }
 
