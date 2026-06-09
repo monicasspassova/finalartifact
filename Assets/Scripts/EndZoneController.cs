@@ -42,7 +42,7 @@ public class EndZoneController : MonoBehaviour
         root.style.justifyContent = Justify.Center;
         UnityEngine.Cursor.lockState = CursorLockMode.None;
 
-        var panel = new ScrollView();
+        var panel = new VisualElement();
         panel.style.backgroundColor = new Color(0.10f, 0.10f, 0.18f, 0.95f);
         panel.style.paddingTop = 24;
         panel.style.paddingBottom = 24;
@@ -53,7 +53,6 @@ public class EndZoneController : MonoBehaviour
         panel.style.borderBottomLeftRadius = 12;
         panel.style.borderBottomRightRadius = 12;
         panel.style.width = 340;
-        panel.style.maxHeight = Length.Percent(70);
         panel.style.borderTopWidth = 2;
         panel.style.borderBottomWidth = 2;
         panel.style.borderLeftWidth = 2;
@@ -64,41 +63,34 @@ public class EndZoneController : MonoBehaviour
         panel.style.borderRightColor = new Color(0.9f, 0.85f, 0.3f);
         root.Add(panel);
 
-        var icon = new Label("🐾  THE QUAD");
-        icon.style.fontSize = 20;
-        icon.style.unityTextAlign = TextAnchor.MiddleCenter;
-        icon.style.color = new Color(0.9f, 0.85f, 0.3f);
-        icon.style.marginBottom = 8;
-        panel.Add(icon);
-
-        var title = new Label("Escape?");
-        title.style.fontSize = 18;
+        var title = new Label("🐾 You have all 3 pieces! Escape?");
+        title.style.fontSize = 16;
         title.style.unityFontStyleAndWeight = FontStyle.Bold;
         title.style.color = Color.white;
         title.style.unityTextAlign = TextAnchor.MiddleCenter;
-        title.style.marginBottom = 8;
+        title.style.whiteSpace = WhiteSpace.Normal;
+        title.style.marginBottom = 16;
         panel.Add(title);
 
-        var sub = new Label("You have all 3 puzzle pieces!\nTurn them in and escape the goose!");
-        sub.style.fontSize = 13;
-        sub.style.color = new Color(0.75f, 0.85f, 1f);
-        sub.style.whiteSpace = WhiteSpace.Normal;
-        sub.style.unityTextAlign = TextAnchor.MiddleCenter;
-        sub.style.marginBottom = 20;
-        panel.Add(sub);
-
-        var escapeBtn = new Button(() => GameManager.Instance.WinGame());
+        var escapeBtn = new Button(() => {
+            UnityEngine.Debug.Log("[EndZone] Escape button clicked!");
+            root.style.display = DisplayStyle.None;
+            GameManager.Instance.WinGame();
+        });
         escapeBtn.text = "Turn in puzzle pieces & Escape!";
         escapeBtn.style.backgroundColor = new Color(0.15f, 0.55f, 0.25f);
         escapeBtn.style.color = Color.white;
         escapeBtn.style.fontSize = 14;
         escapeBtn.style.paddingTop = 10;
         escapeBtn.style.paddingBottom = 10;
-        escapeBtn.style.marginBottom = 8;
         escapeBtn.style.borderTopLeftRadius = 6;
         escapeBtn.style.borderTopRightRadius = 6;
         escapeBtn.style.borderBottomLeftRadius = 6;
         escapeBtn.style.borderBottomRightRadius = 6;
+        escapeBtn.style.borderTopWidth = 0;
+        escapeBtn.style.borderBottomWidth = 0;
+        escapeBtn.style.borderLeftWidth = 0;
+        escapeBtn.style.borderRightWidth = 0;
         panel.Add(escapeBtn);
     }
 
