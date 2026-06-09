@@ -18,7 +18,7 @@ public class Goose : MonoBehaviour
     public float attackCooldown = 2f;
     public float patrolIdleTime = 3f;
     public float rotationSpeed = 7f;
-    public float attackDuration = 1.0f; 
+    public float attackDuration = 1.0f;
 
     private NavMeshAgent agent;
     private float cooldownTimer;
@@ -61,7 +61,7 @@ public class Goose : MonoBehaviour
         isCalled = true;
         isAggro = true;
         aggroTimer = seconds;
-        agent.speed = baseSpeed * 3f;
+        agent.speed = baseSpeed * 2f;
         currentState = State.Chase;
         ChasePlayer();
     }
@@ -124,7 +124,7 @@ public class Goose : MonoBehaviour
             else if (isAggro)
             {
                 // During timed aggro: always chase at 3x speed, ignore detection radius logic
-                agent.speed = baseSpeed * 3f;
+                agent.speed = baseSpeed * 2f;
                 currentState = State.Chase;
             }
             else if (distanceToPlayer <= detectionRadius)
@@ -151,11 +151,11 @@ public class Goose : MonoBehaviour
         // Execute state
         switch (currentState)
         {
-            case State.Patrol: Patrol(); 
+            case State.Patrol: Patrol();
                 break;
-            case State.Chase: ChasePlayer(); 
+            case State.Chase: ChasePlayer();
                 break;
-            case State.Attack: Attack(); 
+            case State.Attack: Attack();
                 break;
         }
 
@@ -211,10 +211,10 @@ public class Goose : MonoBehaviour
     public void PuzzleSolved()
     {
         isCalled = true;
-        agent.speed = baseSpeed * 3f;
+        agent.speed = baseSpeed * 2f;
 
         ChasePlayer();
-        
+
     }
 
     void Attack()
