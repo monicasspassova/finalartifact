@@ -1072,8 +1072,9 @@ MonoBehaviour:
   patrolRadius: 50
   attackCooldown: 2
   patrolIdleTime: 1
-  rotationSpeed: 7
+  rotationSpeed: 5
   attackDuration: 1
+  isAggro: 0
   playerDead: 0
 --- !u!1 &490669000
 GameObject:
@@ -1310,7 +1311,7 @@ GameObject:
   - component: {fileID: 619708587}
   - component: {fileID: 619708586}
   m_Layer: 5
-  m_Name: UIDocument
+  m_Name: PuzzleUi
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1613,6 +1614,7 @@ MonoBehaviour:
   player: {fileID: 753345844}
   winUI: {fileID: 103652513}
   loseUI: {fileID: 624662965}
+  aggroTimerUI: {fileID: 0}
   puzzles:
   - {fileID: 1759575006}
   - {fileID: 1841112491}
