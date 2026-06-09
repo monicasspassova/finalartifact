@@ -13,6 +13,9 @@ public class PuzzleZoneController : MonoBehaviour
 {
     public UIDocument puzzleUI;
     public int puzzleID = 1;
+    public enum PuzzleType { Random, Matching, Trivia, Scramble }
+    public PuzzleType puzzleType = PuzzleType.Random;
+
     public bool completed = false;
 
     private VisualElement root;
@@ -75,18 +78,20 @@ public class PuzzleZoneController : MonoBehaviour
 
     void ShowRandomPuzzle()
     {
-        // Re-fetch root each time to avoid stale references
         root = puzzleUI.rootVisualElement;
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
 
-        // Pick a type (0=matching, 1=trivia0, 2=trivia1) different from last
+        if (puzzleType == PuzzleType.Matching) { BuildMatchingUI(); return; }
+        if (puzzleType == PuzzleType.Trivia)   { BuildTriviaUI(Random.Range(0, TriviaPool.Length)); return; }
+        if (puzzleType == PuzzleType.Scramble) { BuildScrambleUI(); return; }
+
+        // random fallback
         int pick;
         do { pick = Random.Range(0, 3); } while (pick == lastPuzzleShown);
         lastPuzzleShown = pick;
-
-        UnityEngine.Cursor.lockState = CursorLockMode.None;
-
-        if (pick == 0) BuildMatchingUI();
-        else           BuildTriviaUI(pick - 1);
+        if (pick == 0)      BuildMatchingUI();
+        else if (pick == 1) BuildTriviaUI(0);
+        else                BuildTriviaUI(1);
     }
 
     // ================================================================
