@@ -1662,7 +1662,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b586d7ee401b23459dd924465005068, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FPSController
-  moveSpeed: 20
+  moveSpeed: 5
   mouseSensitivity: 2
   jumpHeight: 1.5
   gravity: -9.81
