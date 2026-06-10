@@ -30,6 +30,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        Reset();
+
         winUI.rootVisualElement.style.display = DisplayStyle.None;
         loseUI.rootVisualElement.style.display = DisplayStyle.None;
 

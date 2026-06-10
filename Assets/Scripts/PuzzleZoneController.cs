@@ -1,5 +1,7 @@
+
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -13,7 +15,7 @@ public class PuzzleZoneController : MonoBehaviour
 {
     public UIDocument puzzleUI;
     public int puzzleID = 1;
-    public enum PuzzleType { Random, Matching, Trivia, Scramble }
+    public enum PuzzleType { Random, Matching, Trivia, Scramble, Sequence}
     public PuzzleType puzzleType = PuzzleType.Random;
 
     public bool completed = false;
@@ -94,14 +96,16 @@ public class PuzzleZoneController : MonoBehaviour
         if (puzzleType == PuzzleType.Matching) { BuildMatchingUI(); return; }
         if (puzzleType == PuzzleType.Trivia)   { BuildTriviaUI(Random.Range(0, TriviaPool.Length)); return; }
         if (puzzleType == PuzzleType.Scramble) { BuildScrambleUI(); return; }
+        if (puzzleType == PuzzleType.Sequence) { BuildSequenceUI(Random.Range(0, SequencePool.Length)); return; }
 
         // random fallback
         int pick;
-        do { pick = Random.Range(0, 3); } while (pick == lastPuzzleShown);
+        do { pick = Random.Range(0, 4); } while (pick == lastPuzzleShown);
         lastPuzzleShown = pick;
-        if (pick == 0)      BuildMatchingUI();
-        else if (pick == 1) BuildTriviaUI(0);
-        else                BuildTriviaUI(1);
+        if (pick == 0) BuildMatchingUI();
+        else if (pick == 1) BuildTriviaUI(Random.Range(0, TriviaPool.Length));
+        else if (pick == 2) BuildScrambleUI();
+        else BuildSequenceUI(Random.Range(0, SequencePool.Length));
     }
 
     // ================================================================
@@ -318,80 +322,319 @@ public class PuzzleZoneController : MonoBehaviour
     }
 
     // ================================================================
-//  SCRAMBLE PUZZLE
-// ================================================================
+    //  SCRAMBLE PUZZLE
+    // ================================================================
 
-private string scrambleAnswer = "";
+    private string scrambleAnswer = "";
 
-void BuildScrambleUI()
-{
-    string[] words = { "SUZZALLO", "HUSKY", "DAWGS", "QUAD", "KANE", "ODEGAARD", "PACCAR", "GATES", "ALLEN" };
-    string correct = words[Random.Range(0, words.Length)];
-    scrambleAnswer = correct;
-    string scrambled = ScrambleWord(correct);
-
-    root.Clear();
-    root.style.display = DisplayStyle.Flex;
-    root.style.alignItems = Align.Center;
-    root.style.justifyContent = Justify.Center;
-
-    panel = MakePanel();
-    root.Add(panel);
-
-    AddLabel(panel, "Unscramble the UW word!", 17, FontStyle.Bold, Color.white, 0, 8);
-    AddLabel(panel, scrambled, 28, FontStyle.Bold, new Color(0.9f, 0.85f, 0.3f), 0, 16);
-
-    var feedback = new Label("");
-    feedback.name = "feedback";
-    feedback.style.fontSize = 13;
-    feedback.style.color = Color.yellow;
-    feedback.style.marginBottom = 8;
-    feedback.style.whiteSpace = WhiteSpace.Normal;
-    panel.Add(feedback);
-
-    var inputField = new TextField();
-    inputField.name = "scramble-input";
-    inputField.style.marginBottom = 10;
-    inputField.style.color = Color.black;
-    inputField.style.backgroundColor = Color.white;
-    inputField.style.fontSize = 14;
-    panel.Add(inputField);
-
-    var submitBtn = MakeBtn("Submit", () =>
+    void BuildScrambleUI()
     {
-        string answer = inputField.value.Trim().ToUpper();
-        var fb = panel.Q<Label>("feedback");
-        if (answer == scrambleAnswer)
+        string[] words = { "SUZZALLO", "HUSKY", "DAWGS", "QUAD", "KANE", "ODEGAARD", "PACCAR", "GATES", "ALLEN" };
+        string correct = words[Random.Range(0, words.Length)];
+        scrambleAnswer = correct;
+        string scrambled = ScrambleWord(correct);
+
+        root.Clear();
+        root.style.display = DisplayStyle.Flex;
+        root.style.alignItems = Align.Center;
+        root.style.justifyContent = Justify.Center;
+
+        panel = MakePanel();
+        root.Add(panel);
+
+        AddLabel(panel, "Unscramble the UW word!", 17, FontStyle.Bold, Color.white, 0, 8);
+        AddLabel(panel, scrambled, 28, FontStyle.Bold, new Color(0.9f, 0.85f, 0.3f), 0, 16);
+
+        var feedback = new Label("");
+        feedback.name = "feedback";
+        feedback.style.fontSize = 13;
+        feedback.style.color = Color.yellow;
+        feedback.style.marginBottom = 8;
+        feedback.style.whiteSpace = WhiteSpace.Normal;
+        panel.Add(feedback);
+
+        var inputField = new TextField();
+        inputField.name = "scramble-input";
+        inputField.style.marginBottom = 10;
+        inputField.style.color = Color.black;
+        inputField.style.backgroundColor = Color.white;
+        inputField.style.fontSize = 14;
+        panel.Add(inputField);
+
+        var submitBtn = MakeBtn("Submit", () =>
         {
-            if (fb != null) fb.text = "Correct! 🎉";
-            StartCoroutine(ShowPuzzlePieceAfterDelay(1.0f));
+            string answer = inputField.value.Trim().ToUpper();
+            var fb = panel.Q<Label>("feedback");
+            if (answer == scrambleAnswer)
+            {
+                if (fb != null) fb.text = "Correct!";
+                StartCoroutine(ShowPuzzlePieceAfterDelay(1.0f));
+            }
+            else
+            {
+                GameManager.Instance.TriggerGooseAggro(15f);
+                if (fb != null) fb.text = "Wrong! The goose is coming!";
+                StartCoroutine(CloseAfterDelay(2.5f));
+            }
+        });
+
+        panel.Add(submitBtn);
+
+        var giveUpBtn = MakeBtn("Give Up  (Goose incoming!)", OnGiveUp);
+        StyleAsSecondary(giveUpBtn);
+        panel.Add(giveUpBtn);
+}
+
+    string ScrambleWord(string word)
+    {
+        char[] chars = word.ToCharArray();
+        for (int i = chars.Length - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+            (chars[i], chars[j]) = (chars[j], chars[i]);
+        }
+        // Make sure it's not the same as the original
+        if (new string(chars) == word) return ScrambleWord(word);
+        return new string(chars);
+    }
+
+    // ================================================================
+    // Sequence puzzle
+    // ================================================================
+    private struct SequenceQ
+    {
+        public string prompt;
+        public string[] itemsInOrder; 
+    }
+
+    private static readonly SequenceQ[] SequencePool = new SequenceQ[]
+    {
+        new SequenceQ
+        {
+            prompt = "Put these UW historical events in chronological order", itemsInOrder = new[]
+            {
+                "UW founded in downtown Seattle",
+                "UW moves to current campus",
+                "Alaska-Yukon-Pacific Exposition hosted on campus",
+                "Suzzallo library completed"
+            }
+        },
+
+        new SequenceQ
+        {
+            prompt = "Order these UW buildings from oldest to newest",
+            itemsInOrder = new[]
+            {
+                "Denny Hall",
+                "Suzzallo Library",
+                "Husky Stadium Expansion",
+                "Paul G. Allen Center for Computer Science"
+            }
+        },
+        new SequenceQ
+        {
+            prompt = "Put these UW Football achievements in chronological order",
+            itemsInOrder = new[]
+            {
+                "First Rose Bowl appearance",
+                "First Heisman Trophy winner",
+                "National Champions",
+                "Joined the BIG10 Conference"
+            }
+        }
+
+    };
+
+    private int[] seqCorrectOrder;
+    private int[] seqPlayerOrder;
+    private int seqSelectedSlot;
+    private bool seqPickFirst;
+
+    void BuildSequenceUI(int questionIndex)
+    {
+        var q = SequencePool[questionIndex];
+        int n = q.itemsInOrder.Length;
+
+        seqCorrectOrder = new int[n];
+        for (int i = 0; i < n; i++)
+        {
+            seqCorrectOrder[i] = i;
+        }
+
+        for (int i = n-1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+            (seqCorrectOrder[i], seqCorrectOrder[j]) = (seqCorrectOrder[j], seqCorrectOrder[i]);
+        }
+
+        seqPlayerOrder = new int[n];
+        for (int i = 0; i < n; i++)
+        {
+            seqPlayerOrder[i] = i;
+        }
+
+        seqSelectedSlot = -1;
+
+        // UI
+        root.Clear();
+        root.style.display = DisplayStyle.Flex;
+        root.style.alignItems = Align.Center;
+        root.style.justifyContent = Justify.Center;
+
+        panel = MakePanel();
+        root.Add(panel);
+
+        AddLabel(panel, "Put it in order!", 17, FontStyle.Bold, Color.white, 0, 6);
+        AddLabel(panel, q.prompt, 12, FontStyle.Normal, new Color(0.85f, 0.85f, 0.85f), 0, 4);
+        AddLabel(panel, "Click 2 items to swap them", 11, FontStyle.Normal, new Color(0.65f, 0.65f, 0.75f), 0, 10);
+
+        var feedback = new Label("");
+        feedback.name = "feedback";
+        feedback.style.fontSize = 13;
+        feedback.style.color = Color.yellow;
+        feedback.style.marginBottom = 8;
+        feedback.style.whiteSpace = WhiteSpace.Normal;
+        panel.Add(feedback);
+
+        string[] order = { "1st", "2nd", "3rd", "4th" };
+        for (int rank = 0; rank < n; rank++)
+        {
+            int r = rank;
+            int shuffleIndex = seqPlayerOrder[rank];
+            int correctIndex = seqCorrectOrder[shuffleIndex];
+            string itemText = $"[{order[rank]}] {q.itemsInOrder[correctIndex]}";
+
+            var button = MakeBtn(itemText, () => OnSequenceItemClick(r, q));
+            button.name = $"seq-{rank}";
+            button.style.textOverflow = TextOverflow.Ellipsis;
+            button.style.whiteSpace = WhiteSpace.Normal;
+            button.style.paddingTop = 8;
+            button.style.paddingBottom = 8;
+            panel.Add(button);
+        }
+
+        var submitButton = MakeBtn("Submit order", () => OnSequenceSubmit(q));
+        submitButton.name = "seq-submit";
+        submitButton.style.marginTop = 10;
+        panel.Add(submitButton);
+
+        var giveUpBtn = MakeBtn("Give Up  (Goose incoming!)", OnGiveUp);
+        StyleAsSecondary(giveUpBtn);
+        panel.Add(giveUpBtn);
+
+    }
+
+    void OnSequenceItemClick(int rank, SequenceQ q)
+    {
+        if (seqSelectedSlot < 0)
+        {
+            seqSelectedSlot = rank;
+            var button = panel.Q<Button>($"seq-{rank}");
+            if (button != null)
+            {
+                SetBtnColor(button, ColorSelected);
+            }
+        }
+        else
+        {
+            if (seqSelectedSlot == rank)
+            {
+                seqSelectedSlot = -1;
+                RefreshSequenceColors();
+                return;
+            }
+
+            int tmp = seqPlayerOrder[seqSelectedSlot];
+            seqPlayerOrder[seqSelectedSlot] = seqPlayerOrder[rank];
+            seqPlayerOrder[rank] = tmp;
+
+            seqSelectedSlot = -1;
+            RefreshSequenceLabels(q);
+            RefreshSequenceColors();
+
+        }
+
+        
+    }
+
+    void RefreshSequenceLabels(SequenceQ q)
+    {
+        string[] order = { "1st", "2nd", "3rd", "4th" };
+        int n = seqPlayerOrder.Length;
+        for (int rank = 0; rank < n; rank++)
+        {
+            var button = panel.Q<Button>($"seq-{rank}");
+            if (button == null) continue;
+
+            int shuffledIndex = seqPlayerOrder[rank];
+            int correctIndex = seqCorrectOrder[shuffledIndex];
+            button.text = $"[{order[rank]}] {q.itemsInOrder[correctIndex]}";
+
+        }
+    }
+
+    void RefreshSequenceColors()
+    {
+        int n = seqPlayerOrder.Length;
+        for (int rank = 0; rank < n; rank++)
+        {
+            var button = panel.Q<Button>($"seq-{rank}");
+            if (button == null) continue;
+            SetBtnColor(button, rank == seqSelectedSlot ? ColorSelected : ColorDefault);
+
+        }
+    }
+
+    void OnSequenceSubmit(SequenceQ q)
+    {
+        int n = seqPlayerOrder.Length;
+        bool correct = true;
+
+        for (int rank = 0; rank < n; rank++)
+        {
+            int shuffledIndex = seqPlayerOrder[rank];
+            int correctIndex = seqCorrectOrder[shuffledIndex];
+            if (correctIndex != rank)
+            {
+                correct = false;
+                break;
+            }
+        }
+
+        for (int rank = 0; rank < n; rank++)
+        {
+            var btn = panel.Q<Button>($"seq-{rank}");
+            if (btn == null) continue;
+            int shuffledIndex = seqPlayerOrder[rank];
+            int correctIndex = seqCorrectOrder[shuffledIndex];
+            SetBtnColor(btn, correctIndex == rank ? ColorCorrect : ColorWrong);
+            btn.SetEnabled(false);
+        }
+
+        var feedback = panel.Q<Label>("feedback");
+        var submitBtn = panel.Q<Button>("seq-submit");
+        if (submitBtn != null)
+        {
+            submitBtn.SetEnabled(false);
+        }
+
+        if (correct)
+        {
+            if (feedback != null)
+            {
+                feedback.text = "Correct!";
+                StartCoroutine(ShowPuzzlePieceAfterDelay(1.2f));
+            }
         }
         else
         {
             GameManager.Instance.TriggerGooseAggro(15f);
-            if (fb != null) fb.text = "Wrong! The goose is coming!";
+            if (feedback != null) feedback.text = "Not quite - the goose is coming! Re-enter to try again.";
             StartCoroutine(CloseAfterDelay(2.5f));
         }
-    });
-    panel.Add(submitBtn);
-
-    var giveUpBtn = MakeBtn("Give Up  (Goose incoming!)", OnGiveUp);
-    StyleAsSecondary(giveUpBtn);
-    panel.Add(giveUpBtn);
-}
-
-string ScrambleWord(string word)
-{
-    char[] chars = word.ToCharArray();
-    for (int i = chars.Length - 1; i > 0; i--)
-    {
-        int j = Random.Range(0, i + 1);
-        (chars[i], chars[j]) = (chars[j], chars[i]);
+        
     }
-    // Make sure it's not the same as the original
-    if (new string(chars) == word) return ScrambleWord(word);
-    return new string(chars);
-}
+
 
     // ================================================================
     //  SHARED

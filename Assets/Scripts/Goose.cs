@@ -283,7 +283,7 @@ public class Goose : MonoBehaviour
 
         if (agent.isOnNavMesh && player != null)
         {
-            agent.speed = isAggro ? baseSpeed * 3f : baseSpeed;
+            agent.speed = isAggro ? baseSpeed * 2f : baseSpeed;
             agent.SetDestination(player.position);
         }
     }
