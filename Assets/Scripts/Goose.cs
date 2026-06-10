@@ -77,7 +77,7 @@ public class Goose : MonoBehaviour
         transform.position = new Vector3(30, 1, -24);
         SetNewPatrolPoint();
         currentState = State.Patrol;
-        agent.speed = baseSpeed;
+        if (agent != null) agent.speed = baseSpeed;
     }
 
     void Update()
@@ -194,6 +194,8 @@ public class Goose : MonoBehaviour
 
     void SetNewPatrolPoint()
     {
+        if (agent == null || !agent.isOnNavMesh) return;
+
         Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * patrolRadius + transform.position;
 
         if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, patrolRadius, NavMesh.AllAreas))
@@ -248,7 +250,7 @@ public class Goose : MonoBehaviour
         Vector3 lookPos = new Vector3(player.position.x, transform.position.y, player.position.z);
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookPos - transform.position), Time.deltaTime * rotationSpeed);
 
-        
+
     }
 
     public void DealDamage()
