@@ -104,7 +104,10 @@ public class GameManager : MonoBehaviour
 
         foreach (PuzzleZoneController puzzle in puzzles)
         {
-            puzzle.Reset();
+            if (puzzle != null)
+            {
+                puzzle.Reset();
+            }
         }
 
     }
