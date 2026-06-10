@@ -406,7 +406,7 @@ public class PuzzleZoneController : MonoBehaviour
     private struct SequenceQ
     {
         public string prompt;
-        public string[] itemsInOrder; 
+        public string[] itemsInOrder;
     }
 
     private static readonly SequenceQ[] SequencePool = new SequenceQ[]
@@ -556,7 +556,7 @@ public class PuzzleZoneController : MonoBehaviour
 
         }
 
-        
+
     }
 
     void RefreshSequenceLabels(SequenceQ q)
@@ -634,7 +634,7 @@ public class PuzzleZoneController : MonoBehaviour
             if (feedback != null) feedback.text = "Not quite - the goose is coming! Re-enter to try again.";
             StartCoroutine(CloseAfterDelay(2.5f));
         }
-        
+
     }
 
 
@@ -722,7 +722,7 @@ public class PuzzleZoneController : MonoBehaviour
             GameManager.Instance.TriggerGooseAggro(15f);
             completed = true;
             GameManager.Instance.PuzzleCompleted(puzzleID);
-            GetComponentInChildren<PuzzleOrb>()?.SetCompleted();
+            transform.GetComponentInChildren<PuzzleOrb>()?.SetCompleted();
             CloseUI();
         });
         okBtn.style.backgroundColor = new Color(0.15f, 0.45f, 0.75f);
