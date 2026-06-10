@@ -760,9 +760,10 @@ public class PuzzleZoneController : MonoBehaviour
     public void Reset()
     {
         CloseUI();
+
         completed = false;
         lastPuzzleShown = -1;
-        transform.GetComponentInChildren<PuzzleOrb>()?.SetCompleted();
+        transform.GetComponentInChildren<PuzzleOrb>()?.ResetOrb();
     }
 
     // ================================================================

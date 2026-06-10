@@ -13,9 +13,12 @@ public class PuzzleOrb : MonoBehaviour
 
     void Start()
     {
+        
         startPos = transform.position;
         orbLight = GetComponentInChildren<Light>();
         orbRenderer = GetComponent<Renderer>();
+
+        ResetOrb();
     }
 
     void Update()

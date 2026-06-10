@@ -189,8 +189,8 @@ public class GameManager : MonoBehaviour
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         Time.timeScale = 1f;
 
-
         Reset();
+
 
     }
 
