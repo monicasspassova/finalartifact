@@ -14,9 +14,9 @@ using UnityEngine.UIElements;
 public class PuzzleZoneController : MonoBehaviour
 {
     public UIDocument puzzleUI;
-    public int puzzleID = 1;
+    public int puzzleID;
     public enum PuzzleType { Random, Matching, Trivia, Scramble, Sequence}
-    public PuzzleType puzzleType = PuzzleType.Random;
+    public PuzzleType puzzleType;
 
     public bool completed = false;
 
@@ -84,7 +84,9 @@ public class PuzzleZoneController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+
         if (!other.CompareTag("Player") || completed) return;
+
         ShowRandomPuzzle();
     }
 
