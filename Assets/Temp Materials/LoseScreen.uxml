@@ -1,5 +1,46 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <ui:Image style="height: 73px;"/>
-    <ui:Label text="You lost..." style="-unity-text-align: upper-center;"/>
-    <ui:Button text="Play Again" name="PlayAgainButton" style="bottom: auto; right: auto; top: auto; left: auto; height: 31px; width: 394px;"/>
+    <!-- Full-screen darkened overlay -->
+    <ui:VisualElement style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(20, 0, 0, 0.85); align-items: center; justify-content: center;">
+
+        <!-- Card panel -->
+        <ui:VisualElement style="background-color: rgba(28, 10, 10, 0.97); align-items: center;
+            padding-top: 52px; padding-bottom: 52px; padding-left: 72px; padding-right: 72px;
+            border-top-left-radius: 20px; border-top-right-radius: 20px;
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+            border-left-width: 2px; border-right-width: 2px;
+            border-top-width: 2px; border-bottom-width: 2px;
+            border-left-color: rgba(220, 60, 60, 0.7); border-right-color: rgba(220, 60, 60, 0.7);
+            border-top-color: rgba(220, 60, 60, 0.7); border-bottom-color: rgba(220, 60, 60, 0.7);">
+
+            <!-- Top accent bar -->
+            <ui:VisualElement style="width: 80px; height: 4px; background-color: rgb(220, 60, 60);
+                border-top-left-radius: 2px; border-top-right-radius: 2px;
+                border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+                margin-bottom: 24px;"/>
+
+            <!-- Title -->
+            <ui:Label text="YOU LOSE" style="font-size: 58px; -unity-font-style: bold;
+                color: rgb(230, 65, 65); -unity-text-align: middle-center;
+                margin-bottom: 10px;"/>
+
+            <!-- Divider -->
+            <ui:VisualElement style="width: 200px; height: 1px; background-color: rgba(220, 60, 60, 0.35); margin-bottom: 14px;"/>
+
+            <!-- Subtitle -->
+            <ui:Label text="The goose got you..." style="font-size: 20px;
+                color: rgba(240, 170, 170, 0.85); -unity-text-align: middle-center;
+                margin-bottom: 44px;"/>
+
+            <!-- Play Again button -->
+            <ui:Button text="TRY AGAIN" name="PlayAgainButton"
+                style="width: 260px; height: 52px; font-size: 19px; -unity-font-style: bold;
+                background-color: rgb(185, 40, 40); color: rgb(255, 235, 235);
+                border-top-left-radius: 10px; border-top-right-radius: 10px;
+                border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;
+                border-left-width: 0; border-right-width: 0;
+                border-top-width: 0; border-bottom-width: 0;
+                -unity-text-align: middle-center;"/>
+
+        </ui:VisualElement>
+    </ui:VisualElement>
 </ui:UXML>
