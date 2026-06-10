@@ -477,6 +477,7 @@ string ScrambleWord(string word)
             GameManager.Instance.TriggerGooseAggro(15f);
             completed = true;
             GameManager.Instance.PuzzleCompleted(puzzleID);
+            GetComponentInChildren<PuzzleOrb>()?.SetCompleted();
             CloseUI();
         });
         okBtn.style.backgroundColor = new Color(0.15f, 0.45f, 0.75f);
@@ -516,6 +517,7 @@ string ScrambleWord(string word)
         CloseUI();
         completed = false;
         lastPuzzleShown = -1;
+        transform.GetComponentInChildren<PuzzleOrb>()?.SetCompleted();
     }
 
     // ================================================================

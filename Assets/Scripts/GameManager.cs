@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
 
     void BuildAggroBar()
     {
+        UnityEngine.Debug.Log("[GameManager] BuildAggroBar called. aggroTimerUI=" + aggroTimerUI);
         if (aggroTimerUI == null) return;
         var root = aggroTimerUI.rootVisualElement;
         root.Clear();
@@ -103,7 +104,10 @@ public class GameManager : MonoBehaviour
 
         foreach (PuzzleZoneController puzzle in puzzles)
         {
-            puzzle.Reset();
+            if (puzzle != null)
+            {
+                puzzle.Reset();
+            }
         }
 
     }
@@ -139,10 +143,10 @@ public class GameManager : MonoBehaviour
 
         puzzlesCompleted++;
 
-        if (puzzlesCompleted == totalPuzzles)
-        {
-            WinGame();
-        }
+        // if (puzzlesCompleted == totalPuzzles)
+        // {
+        //     WinGame();
+        // }
     }
 
     public void TriggerGooseAggro(float duration = 30f)
@@ -186,6 +190,16 @@ public class GameManager : MonoBehaviour
 
         Reset();
 
+    }
+
+    public bool AllPuzzlesComplete()
+    {
+        return puzzlesCompleted >= totalPuzzles;
+    }
+
+    public int PuzzlesCompleted()
+    {
+        return puzzlesCompleted;
     }
 }
 
