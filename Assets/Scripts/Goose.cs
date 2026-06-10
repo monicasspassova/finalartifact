@@ -101,6 +101,7 @@ public class Goose : MonoBehaviour
         if (isAttacking && distanceToPlayer > attackRange)
         {
             CancelAttack();
+            animator.SetBool("isAttacking", false);
             currentState = State.Chase;
         }
 
@@ -159,7 +160,6 @@ public class Goose : MonoBehaviour
                 break;
         }
 
-        //animator.SetBool("isWalking", agent.velocity.magnitude > 0.1f && !isAttacking);
 
         if (!isAttacking)
             RotateTowardsMovementDirection();
@@ -169,6 +169,9 @@ public class Goose : MonoBehaviour
     {
         if (isIdle)
         {
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isAttacking", false);
+
             idleTimer += Time.deltaTime;
             if (idleTimer >= patrolIdleTime)
             {
@@ -184,6 +187,9 @@ public class Goose : MonoBehaviour
             isPatrolling = false;
             agent.ResetPath();
         }
+
+        animator.SetBool("isWalking", true);
+
     }
 
     void SetNewPatrolPoint()
@@ -201,6 +207,8 @@ public class Goose : MonoBehaviour
 
     void ChasePlayer()
     {
+        animator.SetBool("isWalking", true);
+
         isIdle = false;
         isPatrolling = false;
 
@@ -219,6 +227,9 @@ public class Goose : MonoBehaviour
 
     void Attack()
     {
+
+        animator.SetBool("isAttacking", true);
+
         if (isAttacking) return;
 
         float distance = Vector3.Distance(transform.position, player.position);
@@ -237,8 +248,7 @@ public class Goose : MonoBehaviour
         Vector3 lookPos = new Vector3(player.position.x, transform.position.y, player.position.z);
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookPos - transform.position), Time.deltaTime * rotationSpeed);
 
-        //animator.ResetTrigger("Attack");
-        //animator.SetTrigger("Attack");
+        
     }
 
     public void DealDamage()
@@ -255,6 +265,8 @@ public class Goose : MonoBehaviour
         if (!isAggro) isCalled = false;
         attackTimer = 0f;
         if (!isAggro) agent.speed = baseSpeed;
+
+        animator.SetBool("isAttacking", false);
     }
 
     public void CancelAttack()
@@ -263,6 +275,8 @@ public class Goose : MonoBehaviour
 
         isAttacking = false;
         if (!isAggro) isCalled = false;
+
+        animator.SetBool("isAttacking", false);
 
         attackTimer = 0f;
         cooldownTimer = attackCooldown;
