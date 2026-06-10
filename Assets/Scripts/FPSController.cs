@@ -24,6 +24,7 @@ public class FPSController : MonoBehaviour
 
     public void Reset()
     {
+        if (controller == null) return;
         controller.enabled = false;
         controller.transform.position = startPos;
         controller.enabled = true;
